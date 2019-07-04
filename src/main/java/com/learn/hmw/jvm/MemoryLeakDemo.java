@@ -1,7 +1,7 @@
 package com.learn.hmw.jvm;
 
 /**
- * 内存泄露
+ * 内存泄露:由于逻辑不严谨,内存空间不会被GC回收
  */
 public class MemoryLeakDemo {
 	

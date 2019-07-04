@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Heap堆溢出
+ * Heap堆溢出:新建对象存储在Heap
  */
 public class HeapOutOfMemory {
 	
