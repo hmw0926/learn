@@ -6,7 +6,7 @@ import java.util.concurrent.Executors;
 public class ThreadPoolDemo2 {
 
 	/**
-	 * 因为线程池大小为3，每个任务输出打印结果后sleep 2秒，所以每两秒打印3个结果。
+	 	因为线程池大小为3，每个任务输出打印结果后sleep 2秒，所以每两秒打印3个结果。
 	 */
 	public static void main(String[] args) {
 
