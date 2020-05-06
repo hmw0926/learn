@@ -1,24 +1,6 @@
 package com.learn.hmw.util.excel;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -27,6 +9,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * excel文件读取工具类,支持xls,xlsx两种格式
@@ -40,14 +29,13 @@ public class ExcelUtil {
     private final static String excel2007U =".xlsx";
     
     public static void main(String[] args) throws Exception{
-    	
-    	Workbook wb = ExcelUtil.getWB(null, "C:/Users/HP/Desktop/学员评估情况导入模板.xlsx");
+
+    	Workbook wb = ExcelUtil.getWB(null, "C:/Users/HP/Desktop/demo.xlsx");
     	Map<Integer, String> fieldMap = new HashMap<Integer, String>();
     	fieldMap.put(0, "stuName");
     	fieldMap.put(1, "score");
-    	
-    	List<ExcelVo> list = ExcelUtil.analyzeExcel(wb, ExcelVo.class, fieldMap);
-    	System.out.println("end");
+
+    	List<ExcelVo> list = ExcelUtil.analyzeExcel(wb, ExcelVo.class, fieldMap, 1, null);
 	}
 
     /**
@@ -106,9 +94,9 @@ public class ExcelUtil {
     
     /**
      * @author hmw
-     * @param Map<Integer, String> fieldMap  Integer = colNum，String = fieldName
+     * @param  fieldMap <Integer, String> fieldMap  Integer = colNum，String = fieldName
      */
-    public static <T> List<T> analyzeExcel(Workbook wb, Class<T> clazz, Map<Integer, String> fieldMap) throws Exception{
+    public static <T> List<T> analyzeExcel(Workbook wb, Class<T> clazz, Map<Integer, String> fieldMap, Integer startRow, Integer endRow) throws Exception{
     	if(clazz == null) throw new Exception("类名为空！");
     	
         //读取sheet(从0计数)
@@ -117,12 +105,15 @@ public class ExcelUtil {
         int rowNum  =sheet.getLastRowNum();
         
         List<T> list = new ArrayList<>();
-        for(int i=1; i<=rowNum; i++){
+
+        if(endRow == null) endRow = rowNum;
+
+        for(int i=startRow; i<=endRow; i++){
         	Object vo = clazz.newInstance();
             //获得行
             Row row = sheet.getRow(i);
             //获得当前行的列数
-            int colNum = row.getLastCellNum();
+            int colNum = fieldMap.size();
             
             for(int j=0; j<colNum; j++){
                 //获取单元格
@@ -171,5 +162,6 @@ public class ExcelUtil {
         workbook.write(out);
         out.close();
     }
-    
+
+
 }
